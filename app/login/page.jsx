@@ -2,35 +2,75 @@
 
 import { useState } from 'react';
 import {auth} from "@/app/firebase/config"
-import {useSignInWithEmailAndPassword} from 'react-firebase-hooks/auth'
+import { useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
+
 
 
 const SignInPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [userSignIn] = useSignInWithEmailAndPassword(auth)
-
+  const [userSignIn]=useSignInWithEmailAndPassword(auth);
 
   const handleSignIn = async (e) => {
     e.preventDefault();
-
+  
     try {
-        // Sign in the user with email and password using Firebase Auth
-         await userSignIn(email, password);
+
+      // Sign in the user with email and password using Firebase Auth
+
+      await userSignIn(email,password);
   
-        // If sign-in is successful, clear the form and error state
-        setEmail('');
-        setPassword('');
+      // If sign-in is successful, clear the form and error state
+      setEmail('');
+      setPassword('');
   
-        console.log('User signed in successfully');
-        // You can redirect the user to another page upon successful sign-in
-        // Example: history.push('/dashboard');
-        window.location.href = '/news';
-      } catch (error) {
-        // Handle sign-in errors and update the error state
+      console.log('User signed in successfully');
+       
+      // window.location.href = '/news';
+
+      
+    } catch (error) {
+      
+      // Handle sign-in errors and update the error state
+      if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+        alert('Email or password is incorrect.');
+      } else {
         console.error('Error signing in:', error);
       }
+      
+    }
   };
+
+
+
+
+
+
+
+
+
+
+
+  // const handleSignIn = async (e) => {
+  //   e.preventDefault();
+
+  //   try {
+  //       // Sign in the user with email and password using Firebase Auth
+  //        await userSignIn(email, password);
+  
+  //       // If sign-in is successful, clear the form and error state
+  //       setEmail('');
+  //       setPassword('');
+  
+  //       console.log('User signed in successfully');
+  //       // You can redirect the user to another page upon successful sign-in
+  //       // Example: history.push('/dashboard');
+  //       window.location.href = '/news';
+  //     } catch (error) {
+  //       // Handle sign-in errors and update the error state
+  //       console.error('Error signing in:', error);
+  //     }
+  // };
 
   return (
     <section className="bg-gray-50 dark:bg-gray-900">
@@ -40,7 +80,7 @@ const SignInPage = () => {
             <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
               Login Here
             </h1>
-            <form className="space-y-4 md:space-y-6" onSubmit={handleSignIn} action="/news">
+            <form className="space-y-4 md:space-y-6" onSubmit={handleSignIn} >
 
               <div>
                 <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your email</label>

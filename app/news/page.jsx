@@ -34,7 +34,7 @@ export default function Home() {
 
   const handleLogoutClick = () => {
     // Implement logout click action here (e.g., perform logout functionality)
-    console.log('Logout clicked');
+    window.location.href = '/';
   };
 
   const handleArticleClick = (index) => {

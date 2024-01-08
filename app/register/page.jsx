@@ -2,7 +2,8 @@
 import { useState } from 'react';
 import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth';
 import { auth, db } from '@/app/firebase/config';
-import { addDoc, collection } from 'firebase/firestore';
+import { addDoc, collection, getDocs, query, where } from 'firebase/firestore';
+
 
 async function addUser(userId, fullName, email) {
   try {
@@ -24,24 +25,77 @@ const SignUpForm = () => {
   const [password, setPassword] = useState('');
   const [createUserWithEmailAndPassword] = useCreateUserWithEmailAndPassword(auth);
 
+  
   const handleSignUp = async (e) => {
     e.preventDefault();
-
+  
     try {
+      // Check if user already exists
+      const usersRef = collection(db, 'users');
+      const q = query(usersRef, where("email", "==", email));
+      const querySnapshot = await getDocs(q);
+      if (!querySnapshot.empty) {
+        alert('Email already exists.');
+        return;
+      }
+  
       const userCredential = await createUserWithEmailAndPassword(email, password);
+      
       const userId = userCredential.user.uid;
+      
+  
       await addUser(userId, fullName, email);
-
+  
       setFullName('');
       setEmail('');
       setPassword('');
-      console.log('User signed up and data stored in Firebase Firestore successfully!');
+      alert('User Registered Login Now');
+      
       window.location.href = '/login';
     } catch (error) {
       console.log(error);
     }
   };
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  // const handleSignUp = async (e) => {
+  //   e.preventDefault();
+
+  //   try {
+
+  //     const userCredential = await createUserWithEmailAndPassword(email, password);
+      
+  //     const userId = userCredential.user.uid;
+      
+
+  //     await addUser(userId, fullName, email);
+
+  //     setFullName('');
+  //     setEmail('');
+  //     setPassword('');
+  //     console.log('User signed up and data stored in Firebase Firestore successfully!');
+      
+  //     window.location.href = '/login';
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+   
   return ( 
     <section className="bg-gray-50 dark:bg-gray-900">
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
